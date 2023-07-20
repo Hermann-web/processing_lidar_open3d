@@ -1,3 +1,4 @@
 /sensors/data_2
 .venv*/
 venv*/
+.venv*
