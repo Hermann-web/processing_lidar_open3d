@@ -1,0 +1,4 @@
+# python 3.9
+matplotlib==3.4.3
+ipykernel==6.4.1
+open3d==0.15.1

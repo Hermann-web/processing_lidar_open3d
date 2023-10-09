@@ -25,10 +25,10 @@ def main():
     widget.scene.show_axes(True)
     window.add_child(widget)
 
-    mat = rendering.Material()
+    mat = rendering.MaterialRecord()
     mat.shader = 'defaultLit'
 
-    box_mat = rendering.Material()
+    box_mat = rendering.MaterialRecord()
     box_mat.shader = 'defaultLit'
     box_mat.line_width = 500
 
