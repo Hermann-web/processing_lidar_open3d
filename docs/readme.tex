@@ -1,0 +1,41 @@
+\section{LiDAR Data Segmentation using RANSAC}
+
+\subsection{Problem Statement}
+LiDAR (Light Detection and Ranging) data is a crucial component in autonomous driving systems, providing a 3D representation of the environment. One of the fundamental challenges in LiDAR data processing is the segmentation of the point cloud into meaningful components such as roads and obstacles. In this section, we present a method utilizing the RANSAC algorithm for segmenting LiDAR data, extracting relevant information for autonomous vehicle perception systems.
+
+\subsection{Data Source}
+The LiDAR data used for this study was sourced from [Specify Data Source]. The dataset captures the 3D environment around an autonomous vehicle, providing a point cloud representation of the surroundings. The raw data contains millions of points, and the segmentation process aims to distinguish between the road and obstacles for improved scene understanding.
+
+\subsection{Method Overview}
+
+Our segmentation approach consists of four key steps:
+
+\subsubsection{Voxel Filtering and Cropping}
+The initial point cloud is downsampled using voxel grid filtering to reduce the data density. Subsequently, points outside a predefined Region of Interest (ROI) are cropped, and points belonging to the ego car's roof are removed, resulting in a refined point cloud ready for segmentation.
+
+\subsubsection{Plane Segmentation using RANSAC}
+RANSAC is employed to segment the refined point cloud into geometric primitives. This step helps separate the road surface from other objects in the environment, highlighting potential obstacles.
+
+\subsubsection{DBSCAN Clustering}
+A Density-Based Spatial Clustering of Applications with Noise (DBSCAN) algorithm is applied to group points into clusters, with each cluster representing a distinct object or obstacle. This step aids in further categorizing the segmented data.
+
+\subsubsection{Bounding Box Extraction}
+For each identified cluster, axis-aligned bounding boxes are determined. These bounding boxes encapsulate the spatial extent of individual objects, providing a structured representation of the segmented LiDAR data.
+
+\subsection{Illustration}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\linewidth]{output_images/downsampled.png}
+    \includegraphics[width=0.3\linewidth]{output_images/cropped.png}
+    \includegraphics[width=0.3\linewidth]{output_images/roof_removed.png}
+    \includegraphics[width=0.3\linewidth]{output_images/plane_segmentation.png}
+    \includegraphics[width=0.3\linewidth]{output_images/clustering.png}
+    \includegraphics[width=0.3\linewidth]{output_images/bounding_boxes.png}
+    \caption{Illustration of LiDAR Data Segmentation Steps. From left to right: (a) Voxel Downsampled, (b) Cropped to ROI, (c) Ego Car Roof Removed, (d) Plane Segmentation using RANSAC, (e) DBSCAN Clustering, (f) Bounding Boxes Extraction.}
+    \label{fig:segmentation_steps}
+\end{figure}
+
+The images in Figure~\ref{fig:segmentation_steps} visually represent each step of the segmentation process, showcasing the effectiveness of the RANSAC-based segmentation algorithm in extracting meaningful information from the LiDAR point cloud.
+
+\clearpage

@@ -3,12 +3,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+o3d.io.write_image
+
+def show(plys, *args, **kwargs):
+    return o3d.visualization.draw_geometries(plys, *args, **kwargs)
+    if not isinstance(plys, list): plys = [plys]
+    vis = o3d.visualization.Visualizer()
+    vis.create_window(visible = False)
+    for pcd in plys:
+        vis.add_geometry(pcd)
+    img = vis.capture_screen_float_buffer(True)
+    plt.imshow(np.asarray(img))
+    # o3d.io.write_image("output_image.png", o3d.geometry.Image(img))
+    plt.imsave("output_image.png", img)
+
+filename = r"C:\Users\hermann.agossou\Documents\GitHub\lidar-object-classification-code-index\3rd-parties\Open3D-PointNet2-Semantic3D\dataset\semantic_raw\bildstein_station3_xyz_intensity_rgb.pcd"
+# filename = "./sensors/data_1/0000000000.pcd"
+filename = "000000.bin.las.pcd"
+
+assert Path(filename).exists()
 
 print("Load a pcd point cloud, print it, and render it")
-pcd = o3d.io.read_point_cloud("/home/henry/2021/lidar-detection/open3d_test_lidar/sensors/data_1/0000000000.pcd")
+pcd = o3d.io.read_point_cloud(filename)
 print(pcd)
 print(np.asarray(pcd.points))
-o3d.visualization.draw_geometries(
+show(
     [pcd],
 )
 
@@ -26,7 +45,7 @@ FIRST STEP
 
 print("Downsample the point cloud with a voxel of 0.2")
 downpcd = pcd.voxel_down_sample(voxel_size=0.2)
-o3d.visualization.draw_geometries(
+show(
     [downpcd]
 )
 
@@ -38,7 +57,7 @@ bbox = o3d.geometry.AxisAlignedBoundingBox(
     max_bound=(30, 7, 1)
     )
 croppcd = downpcd.crop(bbox)
-o3d.visualization.draw_geometries(
+show(
     [croppcd]
 )
 
@@ -48,7 +67,7 @@ roof_bbox = o3d.geometry.AxisAlignedBoundingBox(
     max_bound=(2.6, 1.7, -0.4)
     )
 roofpcd = croppcd.crop(roof_bbox)
-o3d.visualization.draw_geometries(
+show(
     [roofpcd]
 )
 
@@ -64,7 +83,7 @@ for roof_element in roofpcd_points:
 
 print("Extracting the points that doesn't belong to the roof")
 regionpcd = croppcd.select_by_index(indices, invert=True)
-o3d.visualization.draw_geometries(
+show(
     [regionpcd]
 )
 
@@ -86,7 +105,7 @@ plane_model, inliers = regionpcd.segment_plane(
 inlier_cloud = regionpcd.select_by_index(inliers)
 inlier_cloud.paint_uniform_color([1.0, 0, 0])
 outlier_cloud = regionpcd.select_by_index(inliers, invert=True)
-o3d.visualization.draw_geometries(
+show(
     [inlier_cloud, outlier_cloud],
 )
 
@@ -111,7 +130,7 @@ print(f"point cloud has {max_label + 1} clusters")
 colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
 colors[labels < 0] = 0
 outlier_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
-o3d.visualization.draw_geometries(
+show(
     [inlier_cloud, outlier_cloud],
 )
 
@@ -131,6 +150,6 @@ for cluster_number in list(np.unique(labels))[1:]:
     bounding_boxes.append(object_bbox)
 
 print(len(bounding_boxes))
-o3d.visualization.draw_geometries(
+show(
     [inlier_cloud, outlier_cloud, *bounding_boxes]
 )
